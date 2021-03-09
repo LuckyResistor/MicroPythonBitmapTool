@@ -1,0 +1,10 @@
+<RCC>
+    <qresource prefix="/images">
+        <file>AppLogo.png</file>
+        <file>AppLogo@2x.png</file>
+        <file>AppLogo@3x.png</file>
+    </qresource>
+    <qresource prefix="/stylesheet">
+        <file>application.css</file>
+    </qresource>
+</RCC>

@@ -1,0 +1,16 @@
+
+#CentralWidget, QMainWindow {
+    margin: 0;
+    padding: 0;
+}
+
+#SettingsPanel {
+    background-color: #616875;
+    padding: 16px;
+}
+
+#BitmapInfo {
+    border: 1px solid rgba(0,0,0,0.25);
+    padding: 8px;
+    margin: 0px 0px 16px 0px;
+}
