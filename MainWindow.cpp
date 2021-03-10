@@ -37,6 +37,7 @@
 #include <QtWidgets/QPlainTextEdit>
 #include <QtWidgets/QScrollArea>
 #include <QtWidgets/QSplitter>
+#include <QtGui/QDesktopServices>
 
 
 MainWindow::MainWindow(QWidget *parent)
@@ -65,7 +66,7 @@ void MainWindow::initializeConverterList()
 void MainWindow::initializeUi()
 {
     setMinimumSize(800, 600);
-    setWindowTitle(tr("Micropython Bitmap Tool by Lucky Resistor"));
+    setWindowTitle(tr("Micropython Bitmap Tool - V%1 - Lucky Resistor").arg(qApp->applicationVersion()));
 
     auto centralWidget = new QWidget();
     centralWidget->setObjectName("CentralWidget");
@@ -179,12 +180,41 @@ void MainWindow::initializeMenu()
         qApp->quit();
     });
 
+    auto menuEdit = menuBar()->addMenu(tr("Edit"));
+    menuEdit->addAction(tr("Cut"), [=]{
+        QMetaObject::invokeMethod(focusWidget(), "cut");
+    }, QKeySequence("Ctrl+X"));
+    menuEdit->addAction(tr("Copy"), [=]{
+        QMetaObject::invokeMethod(focusWidget(), "copy");
+    }, QKeySequence("Ctrl+C"));
+    menuEdit->addAction(tr("Paste"), [=]{
+        QMetaObject::invokeMethod(focusWidget(), "paste");
+    }, QKeySequence("Ctrl+V"));
+
     auto menuHelp = menuBar()->addMenu(tr("Help"));
     auto actionAbout = menuHelp->addAction(tr("About..."));
+    menuHelp->addAction(tr("Lucky Resistor..."), []{
+        QDesktopServices::openUrl(QUrl("https://luckyresistor.me/"));
+    });
+    menuHelp->addAction(tr("Project Page..."), []{
+        QDesktopServices::openUrl(QUrl("https://luckyresistor.me/applications/micropython-bitmap-tool/"));
+    });
     connect(actionAbout, &QAction::triggered, [=]{
         QMessageBox::about(this, tr("Micropython Bitmap Tool by Lucky Resistor"),
-            tr("<h1>Micropython Bitmap Tool</h1><p>(c)2021 by Lucky Resistor</p>"
-                "<p><b>Version %1</b></p>").arg(qApp->applicationVersion()));
+            tr("<h1>Micropython Bitmap Tool</h1>"
+                "<p>Copyright (c)2021 by Lucky Resistor</p>"
+                "<p><b>Version %1</b></p>"
+                "<h2>License</h2>"
+                "<p>This program is free software: you can redistribute it and/or modify "
+                "it under the terms of the GNU General Public License as published by "
+                "the Free Software Foundation, either version 3 of the License, or "
+                "(at your option) any later version.</p>"
+                "<p>This program is distributed in the hope that it will be useful, "
+                "but WITHOUT ANY WARRANTY; without even the implied warranty of "
+                "MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the "
+                "GNU General Public License for more details. </p>"
+                "You should have received a copy of the GNU General Public License "
+                "along with this program.  If not, see https://www.gnu.org/licenses/.</p>").arg(qApp->applicationVersion()));
     });
     auto actionAboutQt = menuHelp->addAction(tr("Information About Qt..."));
     connect(actionAboutQt, &QAction::triggered, [=]{

@@ -121,6 +121,7 @@ void BitmapPreview::paintEvent(QPaintEvent *pe)
             _converter->paintOverlay(op, _overlayMode, _image);
         }
     } else {
+        p.setPen(Qt::white);
         p.drawText(QRect(0, 0, width(), height()), Qt::AlignCenter, tr("No Bitmap Loaded"));
     }
 }

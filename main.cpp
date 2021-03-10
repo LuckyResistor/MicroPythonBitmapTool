@@ -23,7 +23,7 @@ int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
     a.setApplicationName("MicroPython Bitmap Tool");
-    a.setApplicationVersion("1.0");
+    a.setApplicationVersion("1.0.1");
     a.setApplicationDisplayName("MicroPython Bitmap Tool");
     a.setOrganizationDomain("luckyresistor.me");
     a.setOrganizationName("Lucky Resistoor");

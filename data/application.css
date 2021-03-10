@@ -6,7 +6,12 @@
 
 #SettingsPanel {
     background-color: #616875;
+    color: #f8f8f8;
     padding: 16px;
+}
+
+#SettingsPanel QLabel {
+    color: #f8f8f8;
 }
 
 #BitmapInfo {
