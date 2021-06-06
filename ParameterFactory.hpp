@@ -14,23 +14,24 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 //
-#include "ConverterFramebufMonoVLSB.hpp"
+#pragma once
 
 
-ConverterFramebufMonoVLSB::ConverterFramebufMonoVLSB()
-    : ConverterFramebufMono("MicroPython Framebuf Mono VLSB", UnitOrientation::Vertical, BitDirection::LSB, 8)
+#include "ParameterWidget.hpp"
+
+#include <QtWidgets/QWidget>
+
+
+/// A factory to handle the generic parameters.
+///
+class ParameterFactory
 {
-}
+public:
+    ParameterFactory();
 
-
-QString ConverterFramebufMonoVLSB::generateCode(const QImage &image, const QVariantMap &parameter) const
-{
-    QByteArray data;
-    for (int y = 0; y < image.height(); y += 8) {
-        for (int x = 0; x < image.width(); ++x) {
-            data.append(static_cast<uint8_t>(readUnit(x, y+7, 0, -1, 8, image)));
-        }
-    }
-    return createCode(data, generatedSize(image.size(), parameter), "MONO_VLSB");
-}
+public:
+    /// Create the widget for to edit a parameter.
+    ///
+    ParameterWidget *createWidget(const ParameterEntryPtr &parameter) const;
+};
 

@@ -22,6 +22,7 @@
 #include <QtWidgets/QWidget>
 #include <QtGui/QImage>
 #include <QtGui/QPixmap>
+#include <QtCore/QVariantMap>
 
 
 class Converter;
@@ -49,6 +50,10 @@ public:
     ///
     void setConverter(const Converter *converter);
 
+    /// Set the current parameter.
+    ///
+    void setParameter(const QVariantMap &parameter);
+
 public:
     QSize sizeHint() const override;
     QSize minimumSizeHint() const override;
@@ -58,6 +63,10 @@ protected: // QWidget interface
     void resizeEvent(QResizeEvent *event) override;
 
 private:
+    /// update the generated size
+    ///
+    void updateGeneratedSize();
+
     /// Recalculate all sizes
     ///
     void recalculate();
@@ -74,5 +83,6 @@ private:
     QSize _minimumSize; ///< The preferred size of this widget.
     OverlayMode _overlayMode; ///< The overlay mode.
     const Converter *_converter; ///< The current converter.
+    QVariantMap _parameter; ///< The current set of parameter.
 };
 

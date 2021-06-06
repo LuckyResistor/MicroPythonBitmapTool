@@ -17,12 +17,12 @@
 #pragma once
 
 
-#include "Converter.hpp"
+#include "BitmapConverter.hpp"
 
 
 /// Base class of framebuf converters.
 ///
-class ConverterFramebuf : public Converter
+class ConverterFramebuf : public BitmapConverter
 {
 public:
     ConverterFramebuf(const QString &displayName);

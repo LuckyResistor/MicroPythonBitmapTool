@@ -14,23 +14,26 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 //
-#include "ConverterFramebufMonoVLSB.hpp"
+#pragma once
 
 
-ConverterFramebufMonoVLSB::ConverterFramebufMonoVLSB()
-    : ConverterFramebufMono("MicroPython Framebuf Mono VLSB", UnitOrientation::Vertical, BitDirection::LSB, 8)
+#include "FontConverter.hpp"
+#include "MonoTools.hpp"
+
+
+/// A simple converter to create mono bitmap fonts.
+///
+class FontConverterFramebufMono : public FontConverter, public MonoTools
 {
-}
+public:
+    /// ctor
+    ///
+    FontConverterFramebufMono();
 
-
-QString ConverterFramebufMonoVLSB::generateCode(const QImage &image, const QVariantMap &parameter) const
-{
-    QByteArray data;
-    for (int y = 0; y < image.height(); y += 8) {
-        for (int x = 0; x < image.width(); ++x) {
-            data.append(static_cast<uint8_t>(readUnit(x, y+7, 0, -1, 8, image)));
-        }
-    }
-    return createCode(data, generatedSize(image.size(), parameter), "MONO_VLSB");
-}
+public: // implement FontConverter
+    QSize generatedSize(const QSize &imageSize, const QVariantMap &parameter) const override;
+    QString generateCode(const QFont &font, const QVariantMap &parameter) const override;
+    LegendDataPtr legendData(OverlayMode mode) const override;
+    void paintOverlay(OverlayPainter &p, OverlayMode mode, const QImage &image, const QVariantMap &parameter) const override;
+};
 

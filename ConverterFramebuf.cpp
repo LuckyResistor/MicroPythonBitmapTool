@@ -21,7 +21,7 @@
 
 
 ConverterFramebuf::ConverterFramebuf(const QString &displayName)
-    : Converter(displayName)
+    : BitmapConverter(displayName)
 {
 }
 

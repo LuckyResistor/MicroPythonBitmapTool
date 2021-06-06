@@ -48,9 +48,7 @@ void BitmapPreview::setImage(const QImage &image)
     if (_image != image) {
         _image = image;
         _pixmap = QPixmap::fromImage(image);
-        if (_converter != nullptr) {
-            setGeneratedSize(_converter->generatedSize(_image.size()));
-        }
+        updateGeneratedSize();
         recalculate();
         update();
     }
@@ -80,9 +78,18 @@ void BitmapPreview::setConverter(const Converter *converter)
 {
     if (_converter != converter) {
         _converter = converter;
-        if (_converter != nullptr) {
-            setGeneratedSize(_converter->generatedSize(_image.size()));
-        }
+        updateGeneratedSize();
+        update();
+    }
+}
+
+
+void BitmapPreview::setParameter(const QVariantMap &parameter)
+{
+    if (_parameter != parameter) {
+        _parameter = parameter;
+        updateGeneratedSize();
+        recalculate();
         update();
     }
 }
@@ -118,7 +125,7 @@ void BitmapPreview::paintEvent(QPaintEvent *pe)
             p.setOpacity(1.0);
             p.translate(x, y);
             OverlayPainter op(&p, pe->rect(), _displayFactor, _pixmap.size(), _generatedSize);
-            _converter->paintOverlay(op, _overlayMode, _image);
+            _converter->paintOverlay(op, _overlayMode, _image, _parameter);
         }
     } else {
         p.setPen(Qt::white);
@@ -131,6 +138,16 @@ void BitmapPreview::resizeEvent(QResizeEvent *e)
 {
     recalculate();
     QWidget::resizeEvent(e);
+}
+
+
+void BitmapPreview::updateGeneratedSize()
+{
+    if (_converter != nullptr && _converter->mode() == Converter::Mode::Bitmap) {
+        setGeneratedSize(_converter->generatedSize(_image.size(), _parameter));
+    } else {
+        setGeneratedSize(_image.size());
+    }
 }
 
 

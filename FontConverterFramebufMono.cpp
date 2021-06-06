@@ -14,40 +14,39 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 //
-#include "ConverterFramebufMono.hpp"
+#include "FontConverterFramebufMono.hpp"
 
 
-
-ConverterFramebufMono::ConverterFramebufMono(
-    const QString &displayName,
-    UnitOrientation unitOrientation,
-    BitDirection bitDirection,
-    int unitSize)
+FontConverterFramebufMono::FontConverterFramebufMono()
 :
-    ConverterFramebuf(displayName),
-    MonoTools(unitOrientation, bitDirection, unitSize)
+    FontConverter("MicroPython Font Mono VLSB"),
+    MonoTools(UnitOrientation::Vertical, BitDirection::LSB, 8)
 {
 }
 
 
-QSize ConverterFramebufMono::generatedSize(const QSize &imageSize, const QVariantMap &parameter) const
+QSize FontConverterFramebufMono::generatedSize(const QSize &imageSize, const QVariantMap &parameter) const
 {
     return monoGeneratedSize(imageSize, parameter);
 }
 
 
-LegendDataPtr ConverterFramebufMono::legendData(OverlayMode mode) const
+QString FontConverterFramebufMono::generateCode(const QFont&, const QVariantMap&) const
 {
-    auto data = ConverterFramebuf::legendData(mode);
+    return "The generated format is not decided yet.";
+}
+
+
+LegendDataPtr FontConverterFramebufMono::legendData(OverlayMode mode) const
+{
+    auto data = FontConverter::legendData(mode);
     addMonoLegendData(data, mode);
     return data;
 }
 
 
-void ConverterFramebufMono::paintOverlay(OverlayPainter &p, OverlayMode mode, const QImage &image, const QVariantMap &parameter) const
+void FontConverterFramebufMono::paintOverlay(OverlayPainter &p, OverlayMode mode, const QImage &image, const QVariantMap &parameter) const
 {
-    ConverterFramebuf::paintOverlay(p, mode, image, parameter);
+    FontConverter::paintOverlay(p, mode, image, parameter);
     monoPaintOverlay(p, mode, image, parameter);
 }
-
-

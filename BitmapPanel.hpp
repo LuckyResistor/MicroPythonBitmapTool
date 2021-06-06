@@ -23,13 +23,18 @@
 class BitmapPreview;
 class Converter;
 class QComboBox;
+class QFrame;
 
 
+/// A panel with the scrollable bitmap preview.
+///
 class BitmapPanel : public QWidget
 {
     Q_OBJECT
 
 public:
+    /// Create the panel.
+    ///
     explicit BitmapPanel(QWidget *parent = nullptr);
 
 public:
@@ -41,11 +46,34 @@ public:
     ///
     void setConverter(const Converter *converter);
 
-private:
-    void initializeUi();
+    /// Set the current character set.
+    ///
+    void setCharacters(const QString &characters);
+
+    /// Set the current parameter.
+    ///
+    void setParameter(const QVariantMap &parameter);
+
+    /// Get the current selected character
+    ///
+    QChar selectedCharacter() const;
 
 private:
+    /// Initialize all UI elements.
+    ///
+    void initializeUi();
+
+Q_SIGNALS:
+    /// Emitted if the selected character changes.
+    ///
+    void selectedCharacterChanged(QChar c);
+
+private:
+    const Converter *_converter; ///< The current converter.
+    QString _characters; ///< The list of characters to convert.
     BitmapPreview *_bitmapPreview; ///< The bitmap preview;
+    QFrame *_fontConversionTools; ///< The area with tools for font conversion.
+    QComboBox *_characterSelector; ///< The selector for a single character.
     QComboBox *_overlaySelector; ///< The selector for the overlays.
 };
 

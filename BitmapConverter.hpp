@@ -14,23 +14,32 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 //
-#include "ConverterFramebufMonoVLSB.hpp"
+#pragma once
 
 
-ConverterFramebufMonoVLSB::ConverterFramebufMonoVLSB()
-    : ConverterFramebufMono("MicroPython Framebuf Mono VLSB", UnitOrientation::Vertical, BitDirection::LSB, 8)
+#include "Converter.hpp"
+
+
+/// The base class for all bitmap converters.
+///
+class BitmapConverter : public Converter
 {
-}
+public:
+    /// ctor
+    ///
+    BitmapConverter(const QString &displayName);
 
+public: // implement Converter
+    Mode mode() const override;
 
-QString ConverterFramebufMonoVLSB::generateCode(const QImage &image, const QVariantMap &parameter) const
-{
-    QByteArray data;
-    for (int y = 0; y < image.height(); y += 8) {
-        for (int x = 0; x < image.width(); ++x) {
-            data.append(static_cast<uint8_t>(readUnit(x, y+7, 0, -1, 8, image)));
-        }
-    }
-    return createCode(data, generatedSize(image.size(), parameter), "MONO_VLSB");
-}
+public:
+    /// Generate the code from the given image.
+    ///
+    /// @param image The image to convert.
+    /// @param parameter A map with parameters passed to this converter.
+    /// @return The generated code.
+    ///
+    virtual QString generateCode(const QImage &image, const QVariantMap &parameter) const = 0;
+};
+
 

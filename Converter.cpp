@@ -29,9 +29,15 @@ QString Converter::displayName() const
 }
 
 
-QSize Converter::generatedSize(const QSize &imageSize) const
+QSize Converter::generatedSize(const QSize &imageSize, const QVariantMap&) const
 {
     return imageSize;
+}
+
+
+ParameterDefinitionPtr Converter::createParameterDefinition() const
+{
+    return ParameterDefinition::create();
 }
 
 
@@ -43,7 +49,7 @@ LegendDataPtr Converter::legendData(OverlayMode) const
 }
 
 
-void Converter::paintOverlay(OverlayPainter &op, OverlayMode, const QImage&) const
+void Converter::paintOverlay(OverlayPainter &op, OverlayMode, const QImage&, const QVariantMap&) const
 {
     op.drawPixelOutline(op.imageRect(), colorBitmapSizeOriginal, 1, 2);
     if (op.generatedSize().isValid() && !op.generatedSize().isEmpty()) {

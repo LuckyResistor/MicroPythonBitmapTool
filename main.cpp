@@ -14,16 +14,19 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 //
-#include "MainWindow.hpp"
+
+
+#include "ApplicationController.hpp"
 
 #include <QtWidgets/QApplication>
 #include <QtCore/QFile>
+
 
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
     a.setApplicationName("MicroPython Bitmap Tool");
-    a.setApplicationVersion("1.0.1");
+    a.setApplicationVersion("1.2.0");
     a.setApplicationDisplayName("MicroPython Bitmap Tool");
     a.setOrganizationDomain("luckyresistor.me");
     a.setOrganizationName("Lucky Resistoor");
@@ -32,7 +35,6 @@ int main(int argc, char *argv[])
     a.setStyleSheet(QString::fromUtf8(styleSheet.readAll()));
     styleSheet.close();
 
-    MainWindow w;
-    w.show();
+    ApplicationController app;
     return a.exec();
 }

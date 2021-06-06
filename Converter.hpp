@@ -20,6 +20,7 @@
 #include "LegendData.hpp"
 #include "OverlayPainter.hpp"
 #include "OverlayMode.hpp"
+#include "ParameterDefinition.hpp"
 
 #include <QtGui/QImage>
 #include <QtCore/QObject>
@@ -31,9 +32,16 @@
 class Converter
 {
 public:
+    enum class Mode {
+        Bitmap,
+        Font
+    };
+
+public:
     /// Create a new converter.
     ///
     /// @param displayName The name displayed in the UI for this coonverter.
+    /// @param mode The converter mode.
     ///
     Converter(const QString &displayName);
 
@@ -46,21 +54,21 @@ public:
     ///
     QString displayName() const;
 
+    /// Get the mode for this converter.
+    ///
+    virtual Mode mode() const = 0;
+
 public:
     /// Return the size of the generated bitmap data.
     ///
     /// @param imageSize The size of the image.
     /// @return The size of the generated bitmap data.
     ///
-    virtual QSize generatedSize(const QSize &imageSize) const;
+    virtual QSize generatedSize(const QSize &imageSize, const QVariantMap &parameter) const;
 
-    /// Generate the code from the given image.
+    /// Create the parameter definition for the converter.
     ///
-    /// @param image The image to convert.
-    /// @param parameter A map with parameters passed to this converter.
-    /// @return The generated code.
-    ///
-    virtual QString generateCode(const QImage &image, const QVariantMap &parameter) const = 0;
+    virtual ParameterDefinitionPtr createParameterDefinition() const;
 
     /// Return a legend for the bitmap preview.
     ///
@@ -71,8 +79,9 @@ public:
     /// @param p The painter.
     /// @param mode The overlay mode (never `None`).
     /// @param image The image.
+    /// @param parameter The current set of parameter.
     ///
-    virtual void paintOverlay(OverlayPainter &p, OverlayMode mode, const QImage &image) const;
+    virtual void paintOverlay(OverlayPainter &p, OverlayMode mode, const QImage &image, const QVariantMap &parameter) const;
 
 protected:
     /// The color for the image frame.

@@ -17,16 +17,19 @@
 #include "BitmapPanel.hpp"
 
 
+#include "ApplicationController.hpp"
 #include "Converter.hpp"
 #include "BitmapPreview.hpp"
 
-#include <QComboBox>
-#include <QLabel>
-#include <QScrollArea>
-#include <QVBoxLayout>
+#include <QtWidgets/QComboBox>
+#include <QtWidgets/QLabel>
+#include <QtWidgets/QScrollArea>
+#include <QtWidgets/QVBoxLayout>
+#include <QtWidgets/QPushButton>
 
 
-BitmapPanel::BitmapPanel(QWidget *parent) : QWidget(parent)
+BitmapPanel::BitmapPanel(QWidget *parent)
+    : QWidget(parent), _converter(nullptr)
 {
     initializeUi();
 }
@@ -35,13 +38,46 @@ BitmapPanel::BitmapPanel(QWidget *parent) : QWidget(parent)
 void BitmapPanel::setImage(const QImage &image)
 {
     _bitmapPreview->setImage(image);
+    _bitmapPreview->setFixedSize(_bitmapPreview->sizeHint());
 }
 
 
 void BitmapPanel::setConverter(const Converter *converter)
 {
-    _bitmapPreview->setConverter(converter);
+    if (_converter != converter) {
+        _converter = converter;
+        _bitmapPreview->setConverter(converter);
+        _bitmapPreview->setFixedSize(_bitmapPreview->sizeHint());
+        _characterSelector->setVisible(_converter->mode() == Converter::Mode::Font);
+    }
+}
+
+
+void BitmapPanel::setCharacters(const QString &characters)
+{
+    if (_characters != characters) {
+        _characters = characters;
+        _characterSelector->clear();
+       for (int i = 0; i < characters.size(); ++i) {
+            const auto c = _characters.at(i);
+            _characterSelector->addItem(QString("%1:  %2  0x%3").arg(i, 3, 10, QChar('0'))
+                                        .arg(QString(c)).arg(c.unicode(), 4, 16, QChar('0')), c);
+       }
+       _characterSelector->setCurrentIndex(0);
+    }
+}
+
+
+void BitmapPanel::setParameter(const QVariantMap &parameter)
+{
+    _bitmapPreview->setParameter(parameter);
     _bitmapPreview->setFixedSize(_bitmapPreview->sizeHint());
+}
+
+
+QChar BitmapPanel::selectedCharacter() const
+{
+    return _characterSelector->currentData().toChar();
 }
 
 
@@ -72,6 +108,35 @@ void BitmapPanel::initializeUi()
     auto previewSettingsLayout = new QHBoxLayout(previewSettingsPanel);
     previewSettingsLayout->setContentsMargins(0, 0, 0, 0);
     previewSettingsLayout->setSpacing(4);
+
+    _fontConversionTools = new QFrame();
+    auto fontConversionLayout = new QHBoxLayout(_fontConversionTools);
+    fontConversionLayout->setContentsMargins(0, 0, 0, 0);
+    fontConversionLayout->setSpacing(2);
+    previewSettingsLayout->addWidget(_fontConversionTools);
+
+    auto previousCharButton = new QPushButton("<");
+    fontConversionLayout->addWidget(previousCharButton);
+    _characterSelector = new QComboBox();
+    _characterSelector->setFont(gApp()->monospaceFont());
+    fontConversionLayout->addWidget(_characterSelector);
+    auto nextCharButton = new QPushButton(">");
+    fontConversionLayout->addWidget(nextCharButton);
+    connect(_characterSelector, &QComboBox::currentIndexChanged, [=]{
+        Q_EMIT selectedCharacterChanged(_characterSelector->currentData().toChar());
+    });
+    connect(previousCharButton, &QPushButton::clicked, [=]{
+        auto currentIndex = _characterSelector->currentIndex();
+        if (currentIndex > 0) {
+            _characterSelector->setCurrentIndex(currentIndex - 1);
+        }
+    });
+    connect(nextCharButton, &QPushButton::clicked, [=]{
+        auto currentIndex = _characterSelector->currentIndex();
+        if (currentIndex < (_characterSelector->count()-1)) {
+            _characterSelector->setCurrentIndex(currentIndex + 1);
+        }
+    });
     previewSettingsLayout->addStretch();
     previewSettingsLayout->addWidget(new QLabel(tr("Overlay Mode:")));
     _overlaySelector = new QComboBox();

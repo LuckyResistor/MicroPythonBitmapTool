@@ -17,6 +17,10 @@
 #pragma once
 
 
+#include "ParameterDefinition.hpp"
+#include "ParameterFactory.hpp"
+
+#include <QtCore/QVariantMap>
 #include <QtWidgets/QMainWindow>
 
 
@@ -25,6 +29,11 @@ class QPlainTextEdit;
 class QComboBox;
 class QLabel;
 class BitmapPanel;
+class QFrame;
+class QFontComboBox;
+class QLineEdit;
+class QSpinBox;
+class QFormLayout;
 
 
 /// The main widnow
@@ -64,26 +73,73 @@ private:
 
     /// Update the bitmap info.
     ///
-    void updateBitmapInfo();
+    void updateInfoBox();
 
     /// Update the code.
     ///
     void updateCode();
+
+    /// Update the parameter frame for the current converter.
+    ///
+    void updateParameters();
+
+    /// Get the current parameters
+    ///
+    QVariantMap createParameterMap() const;
 
 private Q_SLOTS:
     /// Load a bitmap.
     ///
     void onLoadBitmap();
 
+    /// After a new converter is selected.
+    ///
+    void onFormatChanged();
+
+    /// After a new font is selected.
+    ///
+    void onFontChanged();
+
+    /// After the character list has changed
+    ///
+    void onCharactersChanged();
+
+    /// If the selected character changed
+    ///
+    void onSelectedCharacterChanged(QChar c);
+
+    /// After a parameter has changed.
+    ///
+    void onParameterChanged();
+
 protected: // Implement QWidget
     void closeEvent(QCloseEvent *event) override;
 
 private:
+    ParameterFactory parameterFactory; ///< The parameter factory.
+
     QComboBox *_formatSelector; ///< The format selector.
     QPlainTextEdit *_codePreview; ///< The generated code.
     BitmapPanel *_bitmapPanel; ///< The bitmap panel.
-    QImage _currentImage; ///< The current loaded image
+
+    QFrame *_parameterFrame; ///< The frame with the parameters.
+    QFormLayout *_parameterLayout; ///< The parameter layout.
+    ParameterDefinitionPtr _displayedParameters; ///< The currently displayed parameters.
+
+    QImage _currentImage; ///< The current loaded image for bitmap converters.
+    QFont _currentFont; ///< The currently selected font for font converters.
+
+    QFrame *_bitmapConverterFrame; ///< The frame for bitmap converters.
     QLabel *_bitmapInfo; ///< The label with the image info.
+
+    QFrame *_fontConverterFrame; ///< The frame for font converters.
+    QLabel *_fontInfo; ///< The label with the font info.
+    QFontComboBox *_fontSelector; ///< The combo box to select a new font.
+    QComboBox *_fontWeightSelector; ///< The selector for the font weight.
+    QSpinBox *_fontSizeSelector; ///< The selector for the used font size.
+    QComboBox *_fontHinting; ///< The hinting settings for the font.
+    QPlainTextEdit *_fontCharacters; ///< The characters of the font to be converted.
+
     QList<Converter*> _converterList; ///< A list of available converters.
 };
 

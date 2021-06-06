@@ -23,7 +23,7 @@ ConverterFramebufMonoHMSB::ConverterFramebufMonoHMSB()
 }
 
 
-QString ConverterFramebufMonoHMSB::generateCode(const QImage &image, const QVariantMap&) const
+QString ConverterFramebufMonoHMSB::generateCode(const QImage &image, const QVariantMap &parameter) const
 {
     QByteArray data;
     for (int y = 0; y < image.height(); ++y) {
@@ -31,6 +31,6 @@ QString ConverterFramebufMonoHMSB::generateCode(const QImage &image, const QVari
             data.append(static_cast<uint8_t>(readUnit(x+7, y, -1, 0, 8, image)));
         }
     }
-    return createCode(data, generatedSize(image.size()), "MONO_HMSB");
+    return createCode(data, generatedSize(image.size(), parameter), "MONO_HMSB");
 }
 

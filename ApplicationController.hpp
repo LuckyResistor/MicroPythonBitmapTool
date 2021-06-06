@@ -14,23 +14,44 @@
 // You should have received a copy of the GNU General Public License
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 //
-#include "ConverterFramebufMonoVLSB.hpp"
+#pragma once
 
 
-ConverterFramebufMonoVLSB::ConverterFramebufMonoVLSB()
-    : ConverterFramebufMono("MicroPython Framebuf Mono VLSB", UnitOrientation::Vertical, BitDirection::LSB, 8)
+#include "MainWindow.hpp"
+
+#include <QtCore/QObject>
+
+
+/// The application controller
+///
+class ApplicationController : public QObject
 {
-}
+    Q_OBJECT
+
+public:
+    /// ctor
+    ///
+    explicit ApplicationController(QObject *parent = nullptr);
+
+public:
+    /// Get the default monospaced font.
+    ///
+    QFont monospaceFont() const;
+
+public:
+    /// Get the global instance.
+    ///
+    static ApplicationController* instance();
+
+private:
+    /// Start the application.
+    ///
+    Q_SLOT void start();
+
+private:
+    static ApplicationController *_instance; ///< The controller instance.
+    MainWindow *_mainWindow; ///< The main window.
+};
 
 
-QString ConverterFramebufMonoVLSB::generateCode(const QImage &image, const QVariantMap &parameter) const
-{
-    QByteArray data;
-    for (int y = 0; y < image.height(); y += 8) {
-        for (int x = 0; x < image.width(); ++x) {
-            data.append(static_cast<uint8_t>(readUnit(x, y+7, 0, -1, 8, image)));
-        }
-    }
-    return createCode(data, generatedSize(image.size(), parameter), "MONO_VLSB");
-}
-
+ApplicationController* gApp();
